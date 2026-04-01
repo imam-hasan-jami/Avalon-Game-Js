@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avalon</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <h1>Avalon</h1>
+    <p class="subtitle">Set player count, then pass the screen to each player privately.</p>
+
+    <section id="setup" class="panel">
+      <label for="playerCount">Number of players (3-10)</label>
+      <div class="setup-row">
+        <input id="playerCount" type="number" min="3" max="10" value="10" />
+        <button id="startBtn" type="button">Start Game</button>
+      </div>
+      <p id="setupInfo" class="hint"></p>
+    </section>
+
+    <section id="game" class="panel hidden">
+      <h2 id="turnTitle"></h2>
+      <p id="turnHint" class="hint"></p>
+
+      <div id="roleCard" class="role-card role-hidden">
+        <p id="roleText">Role is hidden.</p>
+      </div>
+      <p class="hint">Tap the role card to reveal. Tap again to hide and pass.</p>
+    </section>
+
+    <section id="committee" class="panel hidden">
+      <div class="score-focus" id="roundScoreboard">
+        <article class="score-team score-good">
+          <p class="score-label">Loyal Servant of Arthur</p>
+          <p class="score-value" id="goodScore">0</p>
+        </article>
+        <article class="score-team score-bad">
+          <p class="score-label">Minion of Mordred</p>
+          <p class="score-value" id="badScore">0</p>
+        </article>
+      </div>
+
+      <h2 id="committeeTitle">Committee Round 1 of 5</h2>
+      <p id="committeeSize" class="hint"></p>
+      <p id="committeeHint" class="hint"></p>
+
+      <div id="voteCard" class="role-card role-hidden">
+        <p id="voteText">Vote is hidden. Tap to begin this member's vote.</p>
+      </div>
+
+      <div id="voteActions" class="setup-row hidden">
+        <button id="successBtn" type="button">Success</button>
+        <button id="failureBtn" type="button">Failure</button>
+      </div>
+
+      <button id="nextRoundBtn" type="button" class="hidden">Next Committee Round</button>
+    </section>
+
+    <section id="done" class="panel hidden">
+      <h2 id="doneTitle">Game Over</h2>
+      <div class="score-focus final-score">
+        <article class="score-team score-good">
+          <p class="score-label">Loyal Servant of Arthur</p>
+          <p class="score-value" id="doneGoodScore">0</p>
+        </article>
+        <article class="score-team score-bad">
+          <p class="score-label">Minion of Mordred</p>
+          <p class="score-value" id="doneBadScore">0</p>
+        </article>
+      </div>
+      <p id="doneText"></p>
+      <button id="restartBtn" type="button">Play Again</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
