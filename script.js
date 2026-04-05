@@ -15,6 +15,7 @@ const roleText = document.getElementById("roleText");
 const committeeTitle = document.getElementById("committeeTitle");
 const committeeSize = document.getElementById("committeeSize");
 const committeeHint = document.getElementById("committeeHint");
+const roundVoteSummary = document.getElementById("roundVoteSummary");
 const goodScore = document.getElementById("goodScore");
 const badScore = document.getElementById("badScore");
 const voteCard = document.getElementById("voteCard");
@@ -39,9 +40,26 @@ let committeeSizes = [];
 let currentRound = 0;
 let currentVoteMember = 0;
 let failureVotes = 0;
+let lastRoundSuccessVotes = 0;
+let lastRoundFailureVotes = 0;
 let goodWins = 0;
 let badWins = 0;
 let votingOpen = false;
+
+function getEvilCount(totalPlayers) {
+  const evilByPlayerCount = {
+    3: 1,
+    4: 1,
+    5: 2,
+    6: 2,
+    7: 3,
+    8: 3,
+    9: 3,
+    10: 4
+  };
+
+  return evilByPlayerCount[totalPlayers] || 4;
+}
 
 function getCommitteeSizes(totalPlayers) {
   const committeeByPlayerCount = {
@@ -67,7 +85,7 @@ function shuffle(arr) {
 }
 
 function buildRoles(playerCount) {
-  const evilCount = Math.max(1, Math.floor(playerCount * 0.4));
+  const evilCount = getEvilCount(playerCount);
   const goodCount = playerCount - evilCount;
 
   const goodRoles = [];
@@ -82,7 +100,7 @@ function buildRoles(playerCount) {
 }
 
 function showSetupBreakdown(playerCount) {
-  const evilCount = Math.max(1, Math.floor(playerCount * 0.4));
+  const evilCount = getEvilCount(playerCount);
   const goodCount = playerCount - evilCount;
   setupInfo.textContent = `${goodCount} good, ${evilCount} bad (includes Merlin, Percival, and Morgana when possible).`;
 }
@@ -120,6 +138,9 @@ function renderCommitteeRound() {
   committeeHint.textContent = `Committee member ${currentVoteMember + 1} of ${committeeMemberCount}: tap the vote card, then choose Success or Failure privately.`;
   goodScore.textContent = String(goodWins);
   badScore.textContent = String(badWins);
+  roundVoteSummary.innerHTML = "";
+  roundVoteSummary.classList.remove("round-win-good", "round-win-bad");
+  roundVoteSummary.classList.add("hidden");
   nextRoundBtn.classList.add("hidden");
   resetVoteCard();
 }
@@ -129,6 +150,8 @@ function startCommitteePhase() {
   currentRound = 0;
   currentVoteMember = 0;
   failureVotes = 0;
+  lastRoundSuccessVotes = 0;
+  lastRoundFailureVotes = 0;
   goodWins = 0;
   badWins = 0;
 
@@ -145,13 +168,27 @@ function finishGame() {
   const winnerName = goodWonGame ? "Loyal Servant of Arthur" : "Minion of Mordred";
 
   doneTitle.textContent = `${winnerName} wins the game!`;
-  doneText.textContent = `Final score: Loyal Servant of Arthur ${goodWins} - ${badWins} Minion of Mordred.`;
+  doneText.textContent = `Final score: Loyal Servant of Arthur ${goodWins} - ${badWins} Minion of Mordred. Last committee votes: Success ${lastRoundSuccessVotes}, Failure ${lastRoundFailureVotes}.`;
   doneGoodScore.textContent = String(goodWins);
   doneBadScore.textContent = String(badWins);
 }
 
 function resolveRound() {
+  const committeeMemberCount = committeeSizes[currentRound];
+  const successVotes = committeeMemberCount - failureVotes;
   const goodWonRound = failureVotes === 0;
+
+  lastRoundSuccessVotes = successVotes;
+  lastRoundFailureVotes = failureVotes;
+
+  roundVoteSummary.classList.remove("round-win-good", "round-win-bad");
+  roundVoteSummary.classList.add(goodWonRound ? "round-win-good" : "round-win-bad");
+  roundVoteSummary.innerHTML = `
+    <span class="vote-summary-label">Round Votes</span>
+    <span class="vote-pill vote-pill-success">Success ${successVotes}</span>
+    <span class="vote-pill vote-pill-failure">Failure ${failureVotes}</span>
+  `;
+  roundVoteSummary.classList.remove("hidden");
 
   if (goodWonRound) {
     goodWins += 1;
