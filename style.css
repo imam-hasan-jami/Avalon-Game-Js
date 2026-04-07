@@ -30,6 +30,30 @@ body {
   width: min(680px, 100%);
 }
 
+.footer {
+  margin-top: 40px;
+  padding: 20px 24px;
+  text-align: center;
+  border-top: 2px solid var(--border);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.footer p {
+  margin: 0;
+}
+
+.footer a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer a:hover {
+  color: var(--accent-strong);
+  text-decoration: underline;
+}
+
 h1 {
   margin-top: 0;
   margin-bottom: 8px;

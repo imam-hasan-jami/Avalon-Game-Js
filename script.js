@@ -27,6 +27,7 @@ const nextRoundBtn = document.getElementById("nextRoundBtn");
 
 const doneTitle = document.getElementById("doneTitle");
 const doneText = document.getElementById("doneText");
+const finalVoteSummary = document.getElementById("finalVoteSummary");
 const doneGoodScore = document.getElementById("doneGoodScore");
 const doneBadScore = document.getElementById("doneBadScore");
 const restartBtn = document.getElementById("restartBtn");
@@ -168,7 +169,17 @@ function finishGame() {
   const winnerName = goodWonGame ? "Loyal Servant of Arthur" : "Minion of Mordred";
 
   doneTitle.textContent = `${winnerName} wins the game!`;
-  doneText.textContent = `Final score: Loyal Servant of Arthur ${goodWins} - ${badWins} Minion of Mordred. Last committee votes: Success ${lastRoundSuccessVotes}, Failure ${lastRoundFailureVotes}.`;
+  doneText.textContent = `Final score: Loyal Servant of Arthur ${goodWins} - ${badWins} Minion of Mordred.`;
+  
+  // Display final committee votes with styling
+  finalVoteSummary.classList.remove("hidden", "round-win-good", "round-win-bad");
+  finalVoteSummary.classList.add(lastRoundFailureVotes > 0 ? "round-win-bad" : "round-win-good");
+  finalVoteSummary.innerHTML = `
+    <span class="vote-summary-label">Last Committee Votes</span>
+    <span class="vote-pill vote-pill-success">Success ${lastRoundSuccessVotes}</span>
+    <span class="vote-pill vote-pill-failure">Failure ${lastRoundFailureVotes}</span>
+  `;
+  
   doneGoodScore.textContent = String(goodWins);
   doneBadScore.textContent = String(badWins);
 }
